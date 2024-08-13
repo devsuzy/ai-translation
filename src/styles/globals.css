@@ -2,10 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --header-height: 8.4rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,6 +22,7 @@
 html,
 body {
   height: 100%;
+  font-family: "Pretendard", sans-serif;
 }
 
 html {
@@ -27,7 +31,6 @@ html {
 
 body {
   color: rgb(var(--foreground-rgb));
-  /* background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb)); */
   font-size: 1.6rem;
 }
 
@@ -36,6 +39,9 @@ body {
 }
 
 @media screen and (max-width: 1119px) {
+  :root {
+    --header-height: 6.4rem;
+  }
   .pc-only {
     display: none !important;
   }

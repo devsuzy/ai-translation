@@ -1,8 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import styles from "./styles.module.scss";
 
 export default function Header() {
+  const pathname = usePathname();
+
   return (
     <header className={styles.header}>
       <Link href={"/"}>
@@ -11,7 +14,7 @@ export default function Header() {
           alt="logo"
           width={32}
           height={32}
-          className={`lg:w-[48px] lg:h-[48px]`}
+          className={styles.logo}
         />
       </Link>
       <h1>
@@ -21,13 +24,19 @@ export default function Header() {
       <nav>
         <ul className={`flex items-center`}>
           <li>
-            <Link href={"/word"}>
+            <Link
+              href={"/word"}
+              className={`${pathname === "/word" ? styles["active"] : ""}`}
+            >
               단어<span className="pc-only">번역</span>
             </Link>
           </li>
-          <li className={`w-[4px] h-[4px] bg-[#d9d9d9] mx-[16px]`}></li>
+          <li className={styles["mid-dot"]}></li>
           <li>
-            <Link href={"/excel"}>
+            <Link
+              href={"/excel"}
+              className={`${pathname === "/excel" ? styles["active"] : ""}`}
+            >
               문서<span className="pc-only">번역</span>
             </Link>
           </li>
