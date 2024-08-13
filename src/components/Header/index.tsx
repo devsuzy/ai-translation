@@ -14,7 +14,7 @@ export default function Header() {
           className={`lg:w-[48px] lg:h-[48px]`}
         />
       </Link>
-      <h1 className={styles.copy}>
+      <h1>
         <span className="pc-only">Smart </span>AI Translator
         <span className="pc-only"> Powered</span> by ChatGPT
       </h1>

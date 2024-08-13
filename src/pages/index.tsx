@@ -1,5 +1,9 @@
 import Word from "./word";
 
 export default function Home() {
-  return <Word />;
+  return (
+    <>
+      <div>Home</div>
+    </>
+  );
 }
