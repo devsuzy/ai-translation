@@ -1,0 +1,53 @@
+.output-wrap {
+  @apply h-1/2;
+  width: 100%;
+  background-color: rgba(#0060f0, 0.6);
+  backdrop-filter: blur(0.8rem);
+  section {
+    max-width: 960px;
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-top: 8.5rem;
+    padding-bottom: 4rem;
+    div.output-result {
+      width: 100%;
+      font-size: 4.8rem;
+      font-weight: 800;
+      color: #fff;
+      flex: 1;
+      overflow-wrap: anywhere;
+      overflow-y: scroll;
+      margin-bottom: 0.3rem;
+    }
+    .button {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 1.2rem 2.4rem;
+      border-radius: 0.8rem;
+      font-size: 1.6rem;
+      font-weight: 700;
+      border-color: rgba(255, 255, 255, 0.5);
+      @apply bg-transparent border border-solid text-white;
+    }
+  }
+}
+
+@media screen and (max-width: 1119px) {
+  .output-wrap {
+    section {
+      padding: 2.4rem 2.1rem;
+      div.output-result {
+        font-size: 2.2rem;
+      }
+      .button {
+        padding: 1rem;
+      }
+    }
+  }
+}
