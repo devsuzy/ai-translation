@@ -1,3 +1,24 @@
+import { useEffect, useState } from "react";
+import { useMediaQuery } from "react-responsive";
+import { Input, LangBar, Output } from "../../components/Word";
+import styles from "./styles.module.scss";
+
 export default function Word() {
-  return <>word</>;
+  const isDesktop = useMediaQuery({
+    query: "(min-width: 1120px)",
+  });
+
+  const [desktop, setDesktop] = useState(false);
+
+  useEffect(() => {
+    setDesktop(isDesktop);
+  }, [isDesktop]);
+
+  return (
+    <div className={styles["word-wrap"]}>
+      <LangBar />
+      <Input desktop={desktop} />
+      <Output desktop={desktop} />
+    </div>
+  );
 }

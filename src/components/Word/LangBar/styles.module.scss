@@ -1,0 +1,48 @@
+.lang-bar {
+  h3 {
+    position: absolute;
+    top: 3.2rem;
+    transform: translateX(-48rem);
+    font-size: 2rem;
+    font-weight: 600;
+  }
+  .select-box {
+    position: absolute;
+    top: calc(50% + 3.2rem);
+    z-index: 1;
+    transform: translateX(-48rem);
+  }
+}
+
+@media screen and (max-width: 1119px) {
+  .lang-bar {
+    background-color: #fff;
+    width: 100%;
+    display: flex;
+    color: #000;
+    justify-content: space-between;
+    padding: 1.2rem 1.6rem;
+    h3 {
+      position: relative;
+      top: initial;
+      transform: initial;
+      font-weight: 500;
+      font-size: 1.6rem;
+      line-height: 1.9rem;
+      flex: 1;
+      text-align: center;
+    }
+    .select-box {
+      position: relative;
+      top: initial;
+      transform: initial;
+      color: #000;
+      font-weight: 500;
+      font-size: 1.6rem;
+      flex: 1;
+      div {
+        justify-content: center;
+      }
+    }
+  }
+}

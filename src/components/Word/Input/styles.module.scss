@@ -1,0 +1,50 @@
+.input-wrap {
+  @apply h-1/2 w-full;
+  section {
+    max-width: 960px;
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+    align-items: flex-end;
+    textarea {
+      resize: none;
+      width: 100%;
+      flex: 1;
+      outline: 0;
+      font-size: 3.2rem;
+      font-weight: 600;
+      background-color: transparent;
+      margin-bottom: 0.3rem;
+    }
+    .button {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 1.2rem 2.4rem;
+      border-radius: 0.8rem;
+      font-size: 1.6rem;
+      font-weight: 700;
+      @apply bg-primary text-white;
+      box-shadow: 0.2rem 0.4rem 1.6rem 0 rgba(0, 0, 0, 0.16);
+    }
+  }
+}
+
+@media screen and (max-width: 1119px) {
+  .input-wrap {
+    section {
+      padding: 2.4rem 2.1rem;
+      textarea {
+        font-size: 2.2rem;
+      }
+      .button {
+        padding: 1rem;
+      }
+    }
+  }
+}
