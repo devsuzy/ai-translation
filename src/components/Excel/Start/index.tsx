@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
-import Image from "next/image";
 import Button from "@/components/Button";
-import IconExcelEmpty from "../../../../public/images/excel/ic-excel_empty.svg";
+import ExcelEmptyIcon from "@/assets/images/icons/ic-excel_empty.svg";
 
 export const Start = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -20,13 +19,7 @@ export const Start = () => {
   return (
     <div className={styles["start-wrap"]}>
       <div>
-        <Image
-          src={IconExcelEmpty}
-          alt="icon-excel_empty"
-          width={116}
-          height={104}
-          className="m-auto"
-        />
+        <ExcelEmptyIcon width="11.6rem" height="10.4rem" className="m-auto" />
         {isMobile ? (
           <p className="text-[1.8rem] text-center font-semibold pt-6">
             내 PC에서 파일을 첨부해주세요.

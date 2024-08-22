@@ -1,6 +1,5 @@
-import { Upload } from "@/components/Excel/Upload";
 import styles from "./styles.module.scss";
-import { Start } from "@/components/Excel";
+import { Generating, Start, Upload } from "@/components/Excel";
 
 export default function Excel() {
   return (
@@ -8,7 +7,8 @@ export default function Excel() {
       <div className="flex h-[calc(100vh-var(--header-height))]">
         <div className={styles["excel-wrap"]}>
           {/* <Start /> */}
-          <Upload />
+          {/* <Upload /> */}
+          <Generating />
         </div>
       </div>
     </>

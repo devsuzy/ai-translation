@@ -6,6 +6,8 @@ import Copy from "@/assets/images/icons/ic-copy.svg";
 import Download from "@/assets/images/icons/ic-download.svg";
 import Reverse from "@/assets/images/icons/ic-reverse.svg";
 import Warning from "@/assets/images/icons/ic-warning.svg";
+import Translate from "@/assets/images/icons/ic-translate.svg";
+import Sheet from "@/assets/images/icons/ic-sheet.svg";
 
 interface CustomIconProps extends React.SVGAttributes<HTMLOrSVGElement> {
   iconType:
@@ -16,7 +18,9 @@ interface CustomIconProps extends React.SVGAttributes<HTMLOrSVGElement> {
     | "copy"
     | "download"
     | "reverse"
-    | "warning";
+    | "warning"
+    | "translate"
+    | "sheet";
   fill?: string;
   stroke?: string;
   size: "s" | "m" | "l";
@@ -38,6 +42,8 @@ const IconsTypes = {
   download: Download,
   reverse: Reverse,
   warning: Warning,
+  translate: Translate,
+  sheet: Sheet,
 };
 
 export const CustomIcon = ({ iconType, size, ...props }: CustomIconProps) => {
