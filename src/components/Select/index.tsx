@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
-import styles from "./styles.module.scss";
-import Image from "next/image";
+import { useRecoilState } from "recoil";
+import { languageValueState } from "@/stores/word";
 import { CustomIcon } from "../CustomIcon";
+
+import styles from "./styles.module.scss";
 
 interface SelectProps {
   optionList: {
@@ -13,18 +15,17 @@ interface SelectProps {
   value?: string;
 }
 
-export const Select = ({ optionList, className, value }: SelectProps) => {
-  const [selectItem, setSelectItem] = useState(value || optionList[0].label);
+export const Select = ({ optionList, className }: SelectProps) => {
+  const [selectItem, setSelectItem] = useRecoilState(languageValueState);
   const dropMenuRef = useRef<any>(null);
   const [isDropMenuOpen, setDropMenuOpen] = useState<boolean>(false);
-
   const handleOpenDropList = () => {
     setDropMenuOpen(!isDropMenuOpen);
   };
 
   const handleClickItem = (v: { value: string; label: string }) => {
     setDropMenuOpen(false);
-    setSelectItem(v.label);
+    setSelectItem(v.value);
   };
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export const Select = ({ optionList, className, value }: SelectProps) => {
         }`}
         onClick={() => handleOpenDropList()}
       >
-        {selectItem}
+        {optionList.find((obj) => obj.value === selectItem)?.label}
         <CustomIcon
           iconType="arrow"
           stroke="#fff"
@@ -62,10 +63,10 @@ export const Select = ({ optionList, className, value }: SelectProps) => {
                   key={`select-item-${idx}`}
                   value={item.value}
                   onClick={() => handleClickItem(item)}
-                  className={selectItem === item.label ? styles["on"] : ""}
+                  className={selectItem === item.value ? styles["on"] : ""}
                 >
                   {item.label}
-                  {selectItem === item.label && (
+                  {selectItem === item.value && (
                     <CustomIcon iconType="check" size="s" stroke="#007BFF" />
                   )}
                 </li>
