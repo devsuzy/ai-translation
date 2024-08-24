@@ -1,0 +1,20 @@
+.progress-bar {
+  width: 6.4rem;
+  height: 6.4rem;
+  border-radius: 50%;
+  background: linear-gradient(#1384fe, #42a2ff);
+  background: #fff;
+  position: relative;
+}
+.progress-text {
+  font-size: 2rem;
+  margin-top: 1.6rem;
+  text-align: center;
+}
+
+@media screen and (max-width: 1119px) {
+  .progress-text {
+    font-size: 1.8rem;
+    margin-top: 1.2rem;
+  }
+}

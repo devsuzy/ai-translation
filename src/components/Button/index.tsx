@@ -1,9 +1,10 @@
 import React from "react";
+import { CustomIcon } from "../CustomIcon";
 
 type ButtonProps = {
   variant?: "choice" | "cancel" | "start" | "download";
   label: string;
-  icon?: React.ReactNode;
+  icon?: any;
   onClick?: () => void;
 };
 
@@ -28,7 +29,7 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <button className={classes} onClick={onClick}>
       {label}
-      {icon && <span className="ml-1">{icon}</span>}
+      {icon && <CustomIcon iconType={icon} size={"s"} />}
     </button>
   );
 };
