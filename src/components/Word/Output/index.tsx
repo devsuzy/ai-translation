@@ -7,7 +7,7 @@ import { transValueState } from "@/stores/word";
 export const Output = ({ desktop }: { desktop: boolean }) => {
   const outputRef = useRef<HTMLDivElement>(null);
   const transValue = useRecoilValue(transValueState);
-  const handleOnClickButton = async () => {
+  const handleClickButton = async () => {
     const text = outputRef.current?.innerText;
     try {
       await navigator.clipboard.writeText(text ?? "");
@@ -24,7 +24,7 @@ export const Output = ({ desktop }: { desktop: boolean }) => {
         <div className={styles["output-result"]} ref={outputRef}>
           {transValue}
         </div>
-        <button className={styles["button"]} onClick={handleOnClickButton}>
+        <button className={styles["button"]} onClick={handleClickButton}>
           {desktop ? (
             "복사"
           ) : (

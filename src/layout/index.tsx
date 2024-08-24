@@ -1,5 +1,5 @@
+import BackgroundEffect from "@/components/Background";
 import Header from "@/components/Header";
-import { RecoilRoot } from "recoil";
 
 interface Props {
   children: any;
@@ -7,9 +7,10 @@ interface Props {
 
 export default function Layout(props: Props) {
   return (
-    <RecoilRoot>
+    <>
+      <BackgroundEffect />
       <Header />
       <main>{props.children}</main>
-    </RecoilRoot>
+    </>
   );
 }

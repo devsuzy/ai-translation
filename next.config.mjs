@@ -9,6 +9,15 @@ const nextConfig = {
     });
     return config;
   },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/word",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
