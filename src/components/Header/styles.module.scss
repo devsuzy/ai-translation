@@ -1,16 +1,22 @@
 .header {
   display: flex;
   width: 100%;
-  justify-content: space-between;
   padding: 1.8rem 3.2rem;
+  justify-content: center;
   align-items: center;
   height: var(--header-height);
   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  h1 {
+  > h1 {
     font-weight: 600;
     font-size: 2rem;
   }
-  nav {
+  > a {
+    position: absolute;
+    left: 3.2rem;
+  }
+  > nav {
+    position: absolute;
+    right: 3.2rem;
     font-size: 2rem;
     font-weight: 700;
     ul {
@@ -44,12 +50,16 @@
     padding: 1.6rem 2rem;
     border-color: rgba(229, 232, 235, 0.5);
     background-color: #fff;
-    h1 {
+    > h1 {
       font-size: 1.4rem;
       flex: 1;
       margin-left: 0.8rem;
     }
-    nav {
+    > a {
+      position: static;
+    }
+    > nav {
+      position: static;
       font-size: 1.6rem;
       ul {
         li.mid-dot {

@@ -3,8 +3,8 @@ import Image from "next/image";
 export default function BackgroundEffect() {
   return (
     <div className="fixed left-0 top-0 w-full h-full z-[-1]">
-      <div className="absolute left-0 top-0 w-full h-full bg-[rgba(9,122,255,0.4)] mix-blend-lighten"></div>
-      <div className="absolute left-0 top-0 w-full h-full bg-white/40 backdrop-blur-[16px] mix-blend-lighten"></div>
+      <div className="absolute left-0 top-0 w-full h-full bg-[rgba(9,122,255,0.4)] mix-blend-lighten z-[2]"></div>
+      <div className="absolute left-0 top-0 w-full h-full bg-white/40 backdrop-blur-[16px] mix-blend-lighten z-[1]"></div>
       <div className="absolute left-1/2 bottom-[10%] w-[137.7rem] h-[54.8rem] -translate-x-1/2 z-10">
         <Image
           src="/video/video_mask.svg"

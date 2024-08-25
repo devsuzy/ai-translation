@@ -2,8 +2,27 @@ import styles from "./styles.module.scss";
 import Button from "@/components/Button";
 import { CustomIcon } from "@/components/CustomIcon";
 import { ExcelFile } from "../ExcelFile";
+import { useExcelState } from "@/pages/excel";
+import { useCallback } from "react";
 
 export const Upload = () => {
+  const [contextValue, setContextValue] = useExcelState();
+
+  const handleCancle = useCallback(() => {
+    setContextValue({
+      step: "Start",
+      fileData: undefined,
+      fileInfo: undefined,
+    });
+  }, []);
+
+  const handleWork = useCallback(() => {
+    setContextValue((prev) => ({
+      ...prev,
+      step: "Generating",
+    }));
+  }, []);
+
   return (
     <div className={styles["upload-wrap"]}>
       <div className="mb-[5.6rem]">
@@ -41,8 +60,8 @@ export const Upload = () => {
         </div>
       </div>
       <div className="flex gap-[0.8rem]">
-        <Button variant="cancel" label="취소" />
-        <Button variant="start" label="시작" />
+        <Button variant="cancel" label="취소" onClick={handleCancle} />
+        <Button variant="start" label="시작" onClick={handleWork} />
       </div>
     </div>
   );

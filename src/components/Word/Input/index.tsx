@@ -11,12 +11,14 @@ export const Input = ({ desktop }: { desktop: boolean }) => {
   const languageValue = useRecoilValue(languageValueState);
   const setTransValue = useSetRecoilState(transValueState);
   const [input, setInput] = useState("");
-  const debounceValue = useDebounce(input, 1000);
+  const debounceValue = useDebounce(input, 500);
 
   const PostTransValue = useCallback(
     async (input: string) => {
-      if (!input || input.trim() === "") return;
-      console.log(input);
+      if (!input || input.trim() === "") {
+        setTransValue("");
+        return;
+      }
       const result = await TransAPI({ text: input, language: languageValue });
       setTransValue(result);
     },

@@ -5,6 +5,7 @@ import { languageValueState } from "@/stores/word";
 import { CustomIcon } from "../CustomIcon";
 
 import styles from "./styles.module.scss";
+import { setCookie } from "cookies-next";
 
 interface SelectProps {
   optionList: {
@@ -15,7 +16,7 @@ interface SelectProps {
   value?: string;
 }
 
-export const Select = ({ optionList, className }: SelectProps) => {
+const Select = ({ optionList, className }: SelectProps) => {
   const [selectItem, setSelectItem] = useRecoilState(languageValueState);
   const dropMenuRef = useRef<any>(null);
   const [isDropMenuOpen, setDropMenuOpen] = useState<boolean>(false);
@@ -26,6 +27,7 @@ export const Select = ({ optionList, className }: SelectProps) => {
   const handleClickItem = (v: { value: string; label: string }) => {
     setDropMenuOpen(false);
     setSelectItem(v.value);
+    setCookie("lang", v.value);
   };
 
   useEffect(() => {
@@ -78,3 +80,5 @@ export const Select = ({ optionList, className }: SelectProps) => {
     </div>
   );
 };
+
+export default Select;

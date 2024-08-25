@@ -1,10 +1,55 @@
-import { useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import styles from "./styles.module.scss";
 import Button from "@/components/Button";
 import ExcelEmptyIcon from "@/assets/images/icons/ic-excel_empty.svg";
+import ExcelJS from "exceljs";
+import { useExcelState } from "@/pages/excel";
 
 export const Start = () => {
+  const [contextValue, setContextValue] = useExcelState();
   const [isMobile, setIsMobile] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const rowMap = new Map();
+      const file = e.target.files?.[0];
+      if (file && file!.name.split(".").at(-1) === "xlsx") {
+        const wb = new ExcelJS.Workbook();
+        const reader = new FileReader();
+
+        reader.readAsArrayBuffer(file);
+        reader.onload = () => {
+          const buffer = reader.result as ArrayBuffer;
+          wb.xlsx
+            .load(buffer)
+            .then((workbook) => {
+              workbook.eachSheet((sheet, id) => {
+                sheet.eachRow((row, rowIndex) => {
+                  if (!row) return;
+                  const filtered = (row.values as any[]).filter((data) => data);
+                  rowMap.set(rowIndex, filtered);
+                });
+              });
+
+              if (rowMap.size > 0) {
+                setContextValue({
+                  step: "Upload",
+                  fileData: rowMap,
+                  fileInfo: file,
+                });
+              }
+            })
+            .catch((err) => {
+              throw new Error(`upload error - ${err}`);
+            });
+        };
+      } else {
+        alert("업로드 가능한 파일 형식이 아닙니다.");
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,7 +80,12 @@ export const Start = () => {
         <p className="text-[1.4rem] text-center text-gray-2">또는</p>
       </div>
       <div>
-        <Button variant="choice" label="파일 선택" />
+        <Button
+          variant="choice"
+          label="파일 선택"
+          onClick={() => inputRef.current?.click()}
+        />
+        <input type="file" hidden onChange={handleFileUpload} ref={inputRef} />
       </div>
     </div>
   );
