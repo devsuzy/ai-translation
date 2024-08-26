@@ -80,3 +80,7 @@ main {
     text-wrap: balance;
   }
 }
+
+[data-test-id="CircularProgressbarWithChildren"] > div {
+  position: static !important;
+}

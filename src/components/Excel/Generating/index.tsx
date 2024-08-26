@@ -3,10 +3,13 @@ import { ExcelFile } from "../ExcelFile";
 import styles from "./styles.module.scss";
 import Button from "@/components/Button";
 import { EXCEL_ROW_MAP, useExcelState } from "@/pages/excel";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/pages/api/trans";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { progressState } from "@/stores/excel";
+import { CustomIcon } from "@/components/CustomIcon";
 
 export const Generating = () => {
   const [contextValue, setContextValue] = useExcelState();
@@ -14,7 +17,23 @@ export const Generating = () => {
   const [complete, setComplete] = useState<boolean>(false);
   const excelData = contextValue.fileData ? [...contextValue.fileData] : [];
 
+  const setProgress = useSetRecoilState(progressState);
+  const progress = useRecoilValue(progressState);
+
   const callApi = useCallback((text: string) => {
+    setProgress(0);
+
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev < 99) {
+          return prev + 10;
+        } else {
+          clearInterval(interval);
+          return prev;
+        }
+      });
+    }, 100);
+
     return api.post("", {
       type: "trans",
       text,
@@ -88,6 +107,7 @@ export const Generating = () => {
 
         setBlobData(blob);
         setComplete(true);
+        setProgress(100);
       } catch (err) {
         throw new Error(`translation error - ${err}`);
       }
@@ -99,7 +119,14 @@ export const Generating = () => {
     <div className={styles["generating-wrap"]}>
       <ExcelFile />
       <div className={styles["progress-wrap"]}>
-        <ProgressBar />
+        {!complete ? (
+          <ProgressBar text={"생성 중..."} value={`${progress}%`} />
+        ) : (
+          <ProgressBar
+            text={"생성 작업이 완료되었습니다."}
+            value={<CustomIcon iconType={"check"} size={"m"} stroke="white" />}
+          />
+        )}
       </div>
       <div className="flex gap-[0.8rem]">
         {!complete ? (
@@ -108,6 +135,7 @@ export const Generating = () => {
           <Button
             variant="download"
             label="다운로드"
+            icon="download"
             onClick={handleDownload}
           />
         )}
