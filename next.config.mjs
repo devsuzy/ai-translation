@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
+  output: "standalone",
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/i,
@@ -9,15 +10,15 @@ const nextConfig = {
     });
     return config;
   },
-  async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/word",
-        permanent: true,
-      },
-    ];
-  },
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: "/",
+  //       destination: "/word",
+  //       permanent: true,
+  //     },
+  //   ];
+  // },
 };
 
 export default nextConfig;

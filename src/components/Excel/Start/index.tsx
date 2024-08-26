@@ -1,20 +1,29 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./styles.module.scss";
 import Button from "@/components/Button";
-import ExcelEmptyIcon from "@/assets/images/icons/ic-excel_empty.svg";
 import ExcelJS from "exceljs";
 import { useExcelState } from "@/pages/excel";
+import { showToast } from "@/utiles/toast";
+import Image from "next/image";
 
 export const Start = () => {
   const [contextValue, setContextValue] = useExcelState();
   const [isMobile, setIsMobile] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dropzoneRef = useRef<HTMLDivElement>(null);
 
-  const handleFileUpload = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+  const activateDropzone = useCallback(() => {
+    dropzoneRef.current?.classList.add(styles["is-draggable"]);
+  }, []);
+
+  const inactiveDropzone = useCallback(() => {
+    dropzoneRef.current?.classList.remove(styles["is-draggable"]);
+  }, []);
+
+  const setFileData = useCallback(
+    (file: File) => {
       const rowMap = new Map();
-      const file = e.target.files?.[0];
-      if (file && file!.name.split(".").at(-1) === "xlsx") {
+      if (file!.name.split(".").at(-1) === "xlsx") {
         const wb = new ExcelJS.Workbook();
         const reader = new FileReader();
 
@@ -45,10 +54,50 @@ export const Start = () => {
             });
         };
       } else {
-        alert("업로드 가능한 파일 형식이 아닙니다.");
+        showToast("error", <p>업로드 가능한 파일 형식이 아닙니다.</p>);
+        inactiveDropzone();
       }
     },
-    []
+    [setContextValue, inactiveDropzone]
+  );
+
+  const handleFileUpload = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setFileData(file);
+      }
+    },
+    [setFileData]
+  );
+
+  const handleDropOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (e.target === dropzoneRef.current) {
+      activateDropzone();
+    }
+  }, []);
+
+  const handleDragLeave = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      inactiveDropzone();
+    },
+    [inactiveDropzone]
+  );
+
+  const handleFileDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      if (e.dataTransfer.files.length > 1) {
+        showToast("error", <p>한 개의 파일만 업로드 해주세요.</p>);
+        inactiveDropzone();
+        return;
+      }
+      const file = e.dataTransfer.files[0];
+      setFileData(file);
+    },
+    [inactiveDropzone, setFileData]
   );
 
   useEffect(() => {
@@ -58,13 +107,27 @@ export const Start = () => {
 
     window.addEventListener("resize", handleResize);
 
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
-    <div className={styles["start-wrap"]}>
+    <div
+      className={styles["start-wrap"]}
+      onDragOver={handleDropOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleFileDrop}
+      ref={dropzoneRef}
+    >
       <div>
-        <ExcelEmptyIcon width="11.6rem" height="10.4rem" className="m-auto" />
+        <Image
+          src={"/images/ic-excel_empty.png"}
+          width={128}
+          height={118}
+          alt=""
+          className="m-auto"
+        />
         {isMobile ? (
           <p className="text-[1.8rem] text-center font-semibold pt-6">
             내 PC에서 파일을 첨부해주세요.
@@ -72,7 +135,7 @@ export const Start = () => {
         ) : (
           <p className="text-[1.8rem] text-center font-semibold pt-6">
             <b className="text-[2rem] text-primary">내 PC에서 첨부</b>
-            하거나 문서를 드래그하여 넣어주세요..
+            하거나 문서를 드래그하여 넣어주세요.
           </p>
         )}
       </div>
@@ -85,7 +148,13 @@ export const Start = () => {
           label="파일 선택"
           onClick={() => inputRef.current?.click()}
         />
-        <input type="file" hidden onChange={handleFileUpload} ref={inputRef} />
+        <input
+          type="file"
+          accept=".xlsx"
+          hidden
+          onChange={handleFileUpload}
+          ref={inputRef}
+        />
       </div>
     </div>
   );

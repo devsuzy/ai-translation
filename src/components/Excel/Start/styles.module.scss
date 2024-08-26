@@ -1,5 +1,7 @@
 .start-wrap {
+  position: relative;
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -9,6 +11,26 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border: 5px dashed theme("colors.primary");
+    border-radius: 1rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  &.is-draggable {
+    &::after {
+      opacity: 1;
+    }
+  }
 }
 
 .divider {

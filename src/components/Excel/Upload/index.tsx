@@ -14,14 +14,14 @@ export const Upload = () => {
       fileData: undefined,
       fileInfo: undefined,
     });
-  }, []);
+  }, [setContextValue]);
 
   const handleWork = useCallback(() => {
     setContextValue((prev) => ({
       ...prev,
       step: "Generating",
     }));
-  }, []);
+  }, [setContextValue]);
 
   return (
     <div className={styles["upload-wrap"]}>

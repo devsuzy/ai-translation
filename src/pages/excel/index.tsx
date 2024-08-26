@@ -14,6 +14,7 @@ interface ExcelContextTypes {
   step: ExcelStepType;
   fileData?: Map<any, any>;
   fileInfo?: any;
+  complete?: boolean;
 }
 
 export const EXCEL_ROW_MAP = [
@@ -41,18 +42,19 @@ export const useExcelState = () => {
 };
 
 export default function Excel() {
-  const [step, setStep] = useState<ExcelStepType>("Start");
-  const contextValue = useState<ExcelContextTypes>({
+  const contextState = useState<ExcelContextTypes>({
     step: "Start",
+    complete: true,
   });
   return (
     <>
       <div className="flex h-[calc(100vh-var(--header-height))]">
         <div className={styles["excel-wrap"]}>
-          <ExcelContext.Provider value={contextValue}>
-            {contextValue[0].step === "Start" && <Start />}
-            {contextValue[0].step === "Upload" && <Upload />}
-            {contextValue[0].step === "Generating" && <Generating />}
+          <ExcelContext.Provider value={contextState}>
+            {contextState[0].step === "Start" && <Start />}
+            {contextState[0].step === "Upload" && <Upload />}
+            {contextState[0].step === "Generating" && <Generating />}
+            {/* <Generating /> */}
           </ExcelContext.Provider>
         </div>
       </div>

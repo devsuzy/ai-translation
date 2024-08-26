@@ -3,7 +3,7 @@ import { ExcelFile } from "../ExcelFile";
 import styles from "./styles.module.scss";
 import Button from "@/components/Button";
 import { EXCEL_ROW_MAP, useExcelState } from "@/pages/excel";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "@/pages/api/trans";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
@@ -11,8 +11,10 @@ import { saveAs } from "file-saver";
 export const Generating = () => {
   const [contextValue, setContextValue] = useExcelState();
   const [blobData, setBlobData] = useState<Blob>();
-  const [complete, setComplete] = useState<boolean>(false);
-  const excelData = contextValue.fileData ? [...contextValue.fileData] : [];
+
+  const excelData = useMemo(() => {
+    return contextValue.fileData ? [...contextValue.fileData] : [];
+  }, [contextValue]);
 
   const callApi = useCallback((text: string) => {
     return api.post("", {
@@ -29,7 +31,7 @@ export const Generating = () => {
       fileData: undefined,
       fileInfo: undefined,
     });
-  }, []);
+  }, [setContextValue]);
 
   const handleDownload = useCallback(() => {
     if (!blobData) return;
@@ -48,6 +50,10 @@ export const Generating = () => {
           EXCEL_ROW_MAP.findIndex((col) => col === "상품 설명 한글"),
         ];
 
+        const updateProgress = () => {
+          console.log("promise then!!");
+        };
+
         const promises: Promise<any>[] = [];
 
         excelData.forEach((data, i) => {
@@ -55,8 +61,8 @@ export const Generating = () => {
           if (i === 0) return;
           promises.push(
             Promise.allSettled([
-              callApi(values[targetIndexes[0]]),
-              callApi(values[targetIndexes[1]]),
+              callApi(values[targetIndexes[0]]).finally(updateProgress),
+              callApi(values[targetIndexes[1]]).finally(updateProgress),
             ])
           );
         });
@@ -87,7 +93,10 @@ export const Generating = () => {
         });
 
         setBlobData(blob);
-        setComplete(true);
+        setContextValue((prev) => ({
+          ...prev,
+          complete: true,
+        }));
       } catch (err) {
         throw new Error(`translation error - ${err}`);
       }
@@ -102,7 +111,7 @@ export const Generating = () => {
         <ProgressBar />
       </div>
       <div className="flex gap-[0.8rem]">
-        {!complete ? (
+        {!contextValue.complete ? (
           <Button variant="cancel" label="취소" onClick={handleCancle} />
         ) : (
           <Button
