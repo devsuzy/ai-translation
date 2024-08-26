@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./styles.module.scss";
-import { CircularProgressbar } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
 import { useExcelState } from "@/pages/excel";
 import Lottie from "react-lottie";
 import finishAnimationData from "@/assets/lottie/finish_loader_.json";
 import particleAnimationData from "@/assets/lottie/particle.json";
+import particleBlueAnimationData from "@/assets/lottie/particle_blue.json";
+import particleYellowAnimationData from "@/assets/lottie/particle_yellow.json";
 import DelayComponent from "../Delay";
 
 export const ProgressBar = () => {
   const [contextValue] = useExcelState();
-  const [progress, setProgress] = useState(20);
-  const progressRef = useRef<Lottie>(null);
+  const [progress, setProgress] = useState(50);
+  const progressRef = useRef<any>(null);
 
   useEffect(() => {
     if (!progressRef.current) return;
@@ -84,7 +84,7 @@ export const ProgressBar = () => {
                 options={{
                   loop: true,
                   autoplay: true,
-                  animationData: particleAnimationData,
+                  animationData: particleBlueAnimationData,
                   rendererSettings: {
                     preserveAspectRatio: "xMidYMid slice",
                   },
@@ -101,7 +101,7 @@ export const ProgressBar = () => {
                 options={{
                   loop: true,
                   autoplay: true,
-                  animationData: particleAnimationData,
+                  animationData: particleYellowAnimationData,
                   rendererSettings: {
                     preserveAspectRatio: "xMidYMid slice",
                   },

@@ -7,6 +7,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "@/pages/api/trans";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { progressState } from "@/stores/excel";
 
 export const Generating = () => {
   const [contextValue, setContextValue] = useExcelState();
@@ -117,6 +119,7 @@ export const Generating = () => {
           <Button
             variant="download"
             label="다운로드"
+            icon="download"
             onClick={handleDownload}
           />
         )}
