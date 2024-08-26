@@ -1,5 +1,5 @@
 import { useExcelState } from "@/pages/excel";
-import { convertBytes } from "@/utiles/convertBytes";
+import { convertBytes } from "@/utils/convertBytes";
 import Image from "next/image";
 
 export const ExcelFile = () => {

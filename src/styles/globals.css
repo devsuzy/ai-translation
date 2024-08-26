@@ -10,6 +10,7 @@
   --background-end-rgb: 255, 255, 255;
   --header-height: 8.4rem;
 
+  --toastify-toast-width: 360px;
   --toastify-toast-min-height: 54px;
 }
 

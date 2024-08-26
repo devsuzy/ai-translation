@@ -3,7 +3,7 @@ import styles from "./styles.module.scss";
 import Button from "@/components/Button";
 import ExcelJS from "exceljs";
 import { useExcelState } from "@/pages/excel";
-import { showToast } from "@/utiles/toast";
+import { showToast } from "@/utils/toast";
 import Image from "next/image";
 
 export const Start = () => {

@@ -7,11 +7,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "@/pages/api/trans";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { progressState } from "@/stores/excel";
+import { sleep } from "@/utils/sleep";
 
 export const Generating = () => {
   const [contextValue, setContextValue] = useExcelState();
+  const setProgressState = useSetRecoilState(progressState);
   const [blobData, setBlobData] = useState<Blob>();
 
   const excelData = useMemo(() => {
@@ -43,6 +45,8 @@ export const Generating = () => {
   useEffect(() => {
     if (!excelData || excelData.length === 0) return;
 
+    let count = 0;
+
     async function handleTranslation() {
       try {
         const targetIndexes = [
@@ -53,7 +57,11 @@ export const Generating = () => {
         ];
 
         const updateProgress = () => {
-          console.log("promise then!!");
+          count += 1;
+          setProgressState({
+            length: promises.length * 2,
+            count,
+          });
         };
 
         const promises: Promise<any>[] = [];
@@ -93,6 +101,8 @@ export const Generating = () => {
         const blob = new Blob([fileData], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
+
+        await sleep(1000);
 
         setBlobData(blob);
         setContextValue((prev) => ({

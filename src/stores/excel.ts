@@ -1,6 +1,11 @@
 import { atom } from "recoil";
 
-export const progressState = atom<number>({
+type ProgressStateType = {
+  length: number;
+  count: number;
+};
+
+export const progressState = atom<ProgressStateType>({
   key: "progressNumber",
-  default: 0,
+  default: { length: 0, count: 0 },
 });
