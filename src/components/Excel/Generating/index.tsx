@@ -34,6 +34,7 @@ export const Generating = () => {
       step: "Start",
       fileData: undefined,
       fileInfo: undefined,
+      complete: false,
     });
   }, [setContextValue]);
 
@@ -176,12 +177,15 @@ export const Generating = () => {
         {!contextValue.complete ? (
           <Button variant="cancel" label="취소" onClick={handleCancle} />
         ) : (
-          <Button
-            variant="download"
-            label="다운로드"
-            icon="download"
-            onClick={handleDownload}
-          />
+          <>
+            <Button variant="cancel" label="처음으로" onClick={handleCancle} />
+            <Button
+              variant="download"
+              label="다운로드"
+              icon="download"
+              onClick={handleDownload}
+            />
+          </>
         )}
       </div>
     </div>

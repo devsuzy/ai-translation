@@ -72,12 +72,15 @@ export const Start = () => {
     [setFileData]
   );
 
-  const handleDropOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.target === dropzoneRef.current) {
-      activateDropzone();
-    }
-  }, []);
+  const handleDropOver = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      if (e.target === dropzoneRef.current) {
+        activateDropzone();
+      }
+    },
+    [activateDropzone]
+  );
 
   const handleDragLeave = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
