@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./styles.module.scss";
 import { useExcelState } from "@/pages/excel";
-import Lottie, { useLottie } from "lottie-react";
+import Lottie from "lottie-react";
 import finishAnimationData from "@/assets/lottie/finish_loader_.json";
 import particleAnimationData from "@/assets/lottie/particle.json";
 import particleBlueAnimationData from "@/assets/lottie/particle_blue.json";
@@ -9,6 +9,9 @@ import particleYellowAnimationData from "@/assets/lottie/particle_yellow.json";
 import DelayComponent from "../Delay";
 import { useRecoilValue } from "recoil";
 import { progressState } from "@/stores/excel";
+
+import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 export const ProgressBar = () => {
   const [contextValue] = useExcelState();
@@ -41,7 +44,7 @@ export const ProgressBar = () => {
       }, intervalDuration);
     }
 
-    // updateProgressBar();
+    updateProgressBar();
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -51,26 +54,47 @@ export const ProgressBar = () => {
   useEffect(() => {
     if (progressStateValue.length === 0) return;
     if (progressStateValue.length === progressStateValue.count) {
-      // clearInterval(intervalRef.current);
+      clearInterval(intervalRef.current);
       setProgress(100);
       return;
     }
-    setProgress((progressStateValue.count / progressStateValue.length) * 100);
+    // setProgress((progressStateValue.count / progressStateValue.length) * 100);
   }, [progressStateValue]);
 
   if (!contextValue.complete)
     return (
       <>
-        <div className="relative w-[30rem]">
-          <div className="flex flex-col items-center justify-center gap-[2rem]">
-            <div
-              className="w-[30rem] h-[5px] bg-black transition-[scale] duration-[0.5s] origin-left"
-              style={{ scale: `${progress / 100} 1` }}
-            ></div>
-            <p>{progress.toFixed(1)}%</p>
+        <div className="flex flex-col items-center">
+          <div className="flex items-center justify-center w-[10rem] h-[10rem]">
+            <CircularProgressbar
+              className="overflow-visible"
+              strokeWidth={18}
+              background={true}
+              backgroundPadding={-18}
+              styles={{
+                root: {
+                  width: 76,
+                  height: 76,
+                },
+                path: {
+                  stroke: "#deecff",
+                },
+                trail: {
+                  stroke: "transparent",
+                },
+                background: {
+                  fill: "#228dfd",
+                },
+                text: {
+                  fill: "#fff",
+                },
+              }}
+              value={progress}
+              text={`${progress.toFixed(1)}%`}
+            />
           </div>
+          <p className={styles["progress-text"]}>생성중...</p>
         </div>
-        <p className={styles["progress-text"]}>생성중...</p>
       </>
     );
 
