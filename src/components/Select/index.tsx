@@ -6,6 +6,7 @@ import { CustomIcon } from "../CustomIcon";
 
 import styles from "./styles.module.scss";
 import { setCookie } from "cookies-next";
+import { useMediaQuery } from "react-responsive";
 
 interface SelectProps {
   optionList: {
@@ -20,6 +21,12 @@ const Select = ({ optionList, className }: SelectProps) => {
   const [selectItem, setSelectItem] = useRecoilState(languageValueState);
   const dropMenuRef = useRef<any>(null);
   const [isDropMenuOpen, setDropMenuOpen] = useState<boolean>(false);
+  const [desktop, setDesktop] = useState(false);
+
+  const isDesktop = useMediaQuery({
+    query: "(min-width: 1120px)",
+  });
+
   const handleOpenDropList = () => {
     setDropMenuOpen(!isDropMenuOpen);
   };
@@ -29,6 +36,10 @@ const Select = ({ optionList, className }: SelectProps) => {
     setSelectItem(v.value);
     setCookie("lang", v.value);
   };
+
+  useEffect(() => {
+    setDesktop(isDesktop);
+  }, [isDesktop]);
 
   useEffect(() => {
     const handleOutsideClose = (e: { target: any }) => {
@@ -51,7 +62,7 @@ const Select = ({ optionList, className }: SelectProps) => {
         {optionList.find((obj) => obj.value === selectItem)?.label}
         <CustomIcon
           iconType="arrow"
-          stroke="#fff"
+          stroke={desktop ? "#fff" : "#000"}
           size="s"
           className={styles.icon}
         />
