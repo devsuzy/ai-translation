@@ -1,3 +1,4 @@
+import { basePath } from "@/config";
 import Image from "next/image";
 
 export default function BackgroundEffect() {
@@ -7,21 +8,21 @@ export default function BackgroundEffect() {
       <div className="absolute left-0 top-0 w-full h-full bg-white/40 backdrop-blur-[16px] mix-blend-lighten z-[1]"></div>
       <div className="absolute left-1/2 bottom-[10%] w-[137.7rem] h-[54.8rem] -translate-x-1/2 z-10">
         <Image
-          src="/video/video_mask.svg"
+          src={`${basePath}/video/video_mask.svg`}
           alt=""
           width={1377}
           height={548}
           className="absolute left-0 top-0 w-full h-full"
         />
         <Image
-          src="/video/video_mask.svg"
+          src={`${basePath}/video/video_mask.svg`}
           alt=""
           width={1377}
           height={548}
           className="absolute left-0 top-0 w-full h-full"
         />
         <Image
-          src="/video/video_mask.svg"
+          src={`${basePath}/video/video_mask.svg`}
           alt=""
           width={1377}
           height={548}
@@ -35,7 +36,10 @@ export default function BackgroundEffect() {
         playsInline
         className="absolute left-0 top-0 w-full h-full object-cover"
       >
-        <source src="/video/background_video.mp4" type="video/mp4" />
+        <source
+          src={`${basePath}/video/background_video.mp4`}
+          type="video/mp4"
+        />
       </video>
     </div>
   );

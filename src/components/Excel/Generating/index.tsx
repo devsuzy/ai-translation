@@ -4,12 +4,12 @@ import styles from "./styles.module.scss";
 import Button from "@/components/Button";
 import { EXCEL_ROW_MAP, useExcelState } from "@/pages/excel";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { api } from "@/pages/api/trans";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { useSetRecoilState } from "recoil";
 import { progressState } from "@/stores/excel";
 import { sleep } from "@/utils/sleep";
+import { api } from "@/lib/api/trans";
 
 export const Generating = () => {
   const [contextValue, setContextValue] = useExcelState();

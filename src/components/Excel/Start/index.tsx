@@ -5,6 +5,7 @@ import ExcelJS from "exceljs";
 import { useExcelState } from "@/pages/excel";
 import { showToast } from "@/utils/toast";
 import Image from "next/image";
+import { basePath } from "@/config";
 
 export const Start = () => {
   const [contextValue, setContextValue] = useExcelState();
@@ -122,7 +123,7 @@ export const Start = () => {
     >
       <div>
         <Image
-          src={"/images/ic-excel_empty.png"}
+          src={`${basePath}/images/ic-excel_empty.png`}
           width={128}
           height={118}
           alt=""

@@ -50,10 +50,10 @@ export default function Excel() {
       <div className="flex h-[calc(100vh-var(--header-height))]">
         <div className={styles["excel-wrap"]}>
           <ExcelContext.Provider value={contextState}>
-            {/* {contextState[0].step === "Start" && <Start />}
+            {contextState[0].step === "Start" && <Start />}
             {contextState[0].step === "Upload" && <Upload />}
-            {contextState[0].step === "Generating" && <Generating />} */}
-            <Generating />
+            {contextState[0].step === "Generating" && <Generating />}
+            {/* <Generating /> */}
           </ExcelContext.Provider>
         </div>
       </div>

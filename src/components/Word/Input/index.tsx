@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { languageValueState, transValueState } from "@/stores/word";
 import { CustomIcon } from "@/components/CustomIcon";
-import { TransAPI } from "@/pages/api/trans";
 
 import styles from "./styles.module.scss";
 import useDebounce from "@/hooks/useDebounce";
+import { TransAPI } from "@/lib/api/trans";
 
 export const Input = ({ desktop }: { desktop: boolean }) => {
   const languageValue = useRecoilValue(languageValueState);

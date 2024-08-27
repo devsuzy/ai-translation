@@ -1,3 +1,4 @@
+import { basePath } from "@/config";
 import { useExcelState } from "@/pages/excel";
 import { convertBytes } from "@/utils/convertBytes";
 import Image from "next/image";
@@ -8,7 +9,7 @@ export const ExcelFile = () => {
   return (
     <div className="text-center">
       <Image
-        src={"/images/ic-excel.png"}
+        src={`${basePath}/images/ic-excel.png`}
         width={68}
         height={68}
         alt=""
