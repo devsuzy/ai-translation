@@ -87,6 +87,8 @@ export const ProgressBar = () => {
                 },
                 text: {
                   fill: "#fff",
+                  fontSize: 22,
+                  fontWeight: "bold",
                 },
               }}
               value={progress}
