@@ -97,6 +97,56 @@ export const Generating = () => {
           sheet.addRow(values);
         });
 
+        sheet.autoFilter = {
+          from: "A1",
+          to: "I1",
+        };
+
+        sheet.getRow(1).eachCell({ includeEmpty: true }, (cell) => {
+          cell.font = { bold: true };
+        });
+
+        sheet.getColumn("F").width = 33;
+        sheet.getColumn("H").width = 33;
+
+        sheet.getColumn("G").width = 83;
+        sheet.getColumn("I").width = 83;
+
+        sheet.getCell("F1").fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFF8CBAD" },
+        };
+
+        sheet.getCell("G1").fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFF8CBAD" },
+        };
+
+        sheet.getCell("H1").fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF44B3E1" },
+        };
+
+        sheet.getCell("I1").fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF44B3E1" },
+        };
+
+        for (let rowNumber = 1; rowNumber <= sheet.rowCount; rowNumber++) {
+          sheet.getRow(rowNumber).eachCell({ includeEmpty: true }, (cell) => {
+            cell.border = {
+              top: { style: "thin" },
+              left: { style: "thin" },
+              bottom: { style: "thin" },
+              right: { style: "thin" },
+            };
+          });
+        }
+
         const fileData = await wb.xlsx.writeBuffer();
         const blob = new Blob([fileData], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
