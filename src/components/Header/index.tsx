@@ -11,7 +11,7 @@ export default function Header() {
 
   return (
     <header className={styles.header}>
-      <Link href={"/"}>
+      <Link href={"/excel"}>
         <Image
           src={`${basePath}/logo.svg`}
           alt="logo"

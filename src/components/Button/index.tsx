@@ -1,14 +1,16 @@
 import React from "react";
 import { CustomIcon } from "../CustomIcon";
+import { ComponentBaseProps } from "@/types";
 
-type ButtonProps = {
+interface ButtonProps extends ComponentBaseProps {
   variant?: "choice" | "cancel" | "start" | "download";
   label: string;
   icon?: any;
   onClick?: () => void;
-};
+}
 
 const Button: React.FC<ButtonProps> = ({
+  className,
   variant = "choice",
   label,
   icon,
@@ -27,7 +29,7 @@ const Button: React.FC<ButtonProps> = ({
   const classes = `${baseStyles} ${variantStyles[variant]}`;
 
   return (
-    <button className={classes} onClick={onClick}>
+    <button className={`${classes} ${className}`} onClick={onClick}>
       {label}
       {icon && <CustomIcon iconType={icon} size={"s"} stroke="white" />}
     </button>

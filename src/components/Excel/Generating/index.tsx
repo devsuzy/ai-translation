@@ -10,6 +10,25 @@ import { useSetRecoilState } from "recoil";
 import { progressState } from "@/stores/excel";
 import { sleep } from "@/utils/sleep";
 import { api } from "@/lib/api/trans";
+import { sendRequestsInBatches } from "@/utils/requestBatches";
+import { showToast } from "@/utils/toast";
+
+export const callApi = (text: string) => {
+  return api.post("", {
+    type: "trans",
+    text,
+    count: "",
+    situation: `Act as a professinoal translator working in commerce company.\nTranslate the following text to ${"Korean"}.\nAll Translated sentences must be translated with as much detail as possible\nPrint ONLY Translated text.`,
+  });
+};
+
+// export const callApi = (text: string) => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve(`test - ${text}`);
+//     }, Math.random() * 3000 + 1000);
+//   });
+// };
 
 export const Generating = () => {
   const [contextValue, setContextValue] = useExcelState();
@@ -20,21 +39,16 @@ export const Generating = () => {
     return contextValue.fileData ? [...contextValue.fileData] : [];
   }, [contextValue]);
 
-  const callApi = useCallback((text: string) => {
-    return api.post("", {
-      type: "trans",
-      text,
-      count: "",
-      situation: `Act as a professinoal translator working in commerce company.\nTranslate the following text to ${"Korean"}.\nAll Translated sentences must be translated with as much detail as possible\nPrint ONLY Translated text.`,
-    });
-  }, []);
-
   const handleCancle = useCallback(() => {
     setContextValue({
       step: "Start",
       fileData: undefined,
       fileInfo: undefined,
       complete: false,
+    });
+    setProgressState({
+      length: 0,
+      count: 0,
     });
   }, [setContextValue]);
 
@@ -65,29 +79,27 @@ export const Generating = () => {
           });
         };
 
-        const promises: Promise<any>[] = [];
+        const promises: any[] = [];
 
         excelData.forEach((data, i) => {
           const [key, values] = data;
           if (i === 0) return;
-          promises.push(
-            Promise.allSettled([
-              callApi(values[targetIndexes[0]]).finally(updateProgress),
-              callApi(values[targetIndexes[1]]).finally(updateProgress),
-            ])
-          );
+
+          promises.push([
+            { value: values[targetIndexes[0]], callback: updateProgress },
+            { value: values[targetIndexes[1]], callback: updateProgress },
+          ]);
         });
 
-        const result = await Promise.allSettled(promises);
+        const result = await sendRequestsInBatches(promises, 50, 3000);
+        const resultFlat = result.flat();
 
-        result.forEach((res, i) => {
+        resultFlat.forEach((res, i) => {
           if (res.status === "fulfilled") {
             excelData[i + 1][1][targetIndexes[2]] = res.value[0].value.data;
             excelData[i + 1][1][targetIndexes[3]] = res.value[1].value.data;
           }
         });
-
-        console.log(excelData);
 
         const wb = new ExcelJS.Workbook();
 
@@ -161,6 +173,7 @@ export const Generating = () => {
           complete: true,
         }));
       } catch (err) {
+        showToast("error", "번역에 실패했습니다.");
         throw new Error(`translation error - ${err}`);
       }
     }
@@ -173,17 +186,23 @@ export const Generating = () => {
       <div className={styles["progress-wrap"]}>
         <ProgressBar />
       </div>
-      <div className="flex gap-[0.8rem]">
+      <div className="flex gap-[0.8rem] max-w-[30rem]">
         {!contextValue.complete ? (
           <Button variant="cancel" label="취소" onClick={handleCancle} />
         ) : (
           <>
-            <Button variant="cancel" label="처음으로" onClick={handleCancle} />
+            <Button
+              variant="cancel"
+              label="처음으로"
+              onClick={handleCancle}
+              className={"px-0 w-[16rem] justify-center"}
+            />
             <Button
               variant="download"
               label="다운로드"
               icon="download"
               onClick={handleDownload}
+              className={"px-0 w-[16rem] justify-center"}
             />
           </>
         )}

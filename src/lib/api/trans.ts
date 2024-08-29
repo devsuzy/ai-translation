@@ -11,13 +11,16 @@ export interface TransWordRequest {
   language: string;
 }
 
+export const TransSituation = (lang: string) =>
+  `Act as a professinoal translator working in commerce company.\nTranslate the following text to ${lang}.\nAll Translated sentences must be translated with as much detail as possible\nPrint ONLY Translated text.`;
+
 export const TransAPI = async ({ text, language }: TransWordRequest) => {
   return await api
     .post("", {
       type: "trans",
       text: text,
       count: "",
-      situation: `Act as a professinoal translator working in commerce company.\nTranslate the following text to ${language}.\nAll Translated sentences must be translated with as much detail as possible\nPrint ONLY Translated text.`,
+      situation: TransSituation(language),
     })
     .then((response) => response.data)
     .catch((error) => {

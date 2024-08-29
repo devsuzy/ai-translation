@@ -23,7 +23,7 @@ export const ProgressBar = () => {
 
   useEffect(() => {
     function updateProgressBar() {
-      let updateProgress = 0;
+      let updateProgress = progress;
       let increment = 1;
       const intervalDuration = 100;
 
@@ -44,7 +44,7 @@ export const ProgressBar = () => {
       }, intervalDuration);
     }
 
-    updateProgressBar();
+    // updateProgressBar();
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -54,11 +54,11 @@ export const ProgressBar = () => {
   useEffect(() => {
     if (progressStateValue.length === 0) return;
     if (progressStateValue.length === progressStateValue.count) {
-      clearInterval(intervalRef.current);
+      // clearInterval(intervalRef.current);
       setProgress(100);
       return;
     }
-    // setProgress((progressStateValue.count / progressStateValue.length) * 100);
+    setProgress((progressStateValue.count / progressStateValue.length) * 100);
   }, [progressStateValue]);
 
   if (!contextValue.complete)
