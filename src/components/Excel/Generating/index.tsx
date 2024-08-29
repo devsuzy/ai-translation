@@ -195,14 +195,14 @@ export const Generating = () => {
               variant="cancel"
               label="처음으로"
               onClick={handleCancle}
-              className={"px-0 w-[16rem] justify-center"}
+              className={"!px-0 !w-[16rem] justify-center"}
             />
             <Button
               variant="download"
               label="다운로드"
               icon="download"
               onClick={handleDownload}
-              className={"px-0 w-[16rem] justify-center"}
+              className={"!px-0 !w-[16rem] justify-center"}
             />
           </>
         )}
