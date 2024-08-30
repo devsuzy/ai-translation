@@ -35,6 +35,15 @@ export const Generating = () => {
   const setProgressState = useSetRecoilState(progressState);
   const [blobData, setBlobData] = useState<Blob>();
 
+  const fileNameSplit = (
+    contextValue.fileInfo?.name ? contextValue.fileInfo?.name : "empty.xlsx"
+  ).split(".");
+  const fileExtension = fileNameSplit.at(-1);
+  const downloadFileName =
+    fileNameSplit.slice(0, fileNameSplit.length - 1).join() +
+    "_번역본" +
+    `.${fileExtension}`;
+
   const excelData = useMemo(() => {
     return contextValue.fileData ? [...contextValue.fileData] : [];
   }, [contextValue]);
@@ -45,16 +54,17 @@ export const Generating = () => {
       fileData: undefined,
       fileInfo: undefined,
       complete: false,
+      wb: undefined,
     });
     setProgressState({
       length: 0,
       count: 0,
     });
-  }, [setContextValue]);
+  }, [setContextValue, setProgressState]);
 
   const handleDownload = useCallback(() => {
     if (!blobData) return;
-    saveAs(blobData, "상품한글번역");
+    saveAs(blobData, downloadFileName);
   }, [blobData]);
 
   useEffect(() => {
@@ -101,64 +111,74 @@ export const Generating = () => {
           }
         });
 
-        const wb = new ExcelJS.Workbook();
+        const wb = contextValue.wb;
 
-        const sheet = wb.addWorksheet("번역본");
+        if (!wb) return;
 
-        excelData.forEach((data) => {
-          const [key, values] = data;
-          sheet.addRow(values);
-        });
-
-        sheet.autoFilter = {
-          from: "A1",
-          to: "I1",
-        };
-
-        sheet.getRow(1).eachCell({ includeEmpty: true }, (cell) => {
-          cell.font = { bold: true };
-        });
-
-        sheet.getColumn("F").width = 33;
-        sheet.getColumn("H").width = 33;
-
-        sheet.getColumn("G").width = 83;
-        sheet.getColumn("I").width = 83;
-
-        sheet.getCell("F1").fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "FFF8CBAD" },
-        };
-
-        sheet.getCell("G1").fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "FFF8CBAD" },
-        };
-
-        sheet.getCell("H1").fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "FF44B3E1" },
-        };
-
-        sheet.getCell("I1").fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "FF44B3E1" },
-        };
-
-        for (let rowNumber = 1; rowNumber <= sheet.rowCount; rowNumber++) {
-          sheet.getRow(rowNumber).eachCell({ includeEmpty: true }, (cell) => {
-            cell.border = {
-              top: { style: "thin" },
-              left: { style: "thin" },
-              bottom: { style: "thin" },
-              right: { style: "thin" },
-            };
+        wb.eachSheet((sheet, id) => {
+          sheet.eachRow((row, rowIndex) => {
+            if (rowIndex === 1 || !row) return;
+            sheet.getRow(rowIndex).getCell(8).value =
+              excelData[rowIndex - 1]?.[1]?.[7];
+            sheet.getRow(rowIndex).getCell(9).value =
+              excelData[rowIndex - 1]?.[1]?.[8];
           });
-        }
+        });
+
+        // excelData.forEach((data) => {
+        //   const [key, values] = data;
+        //   sheet.addRow(values);
+        // });
+
+        // sheet.autoFilter = {
+        //   from: "A1",
+        //   to: "I1",
+        // };
+
+        // sheet.getRow(1).eachCell({ includeEmpty: true }, (cell) => {
+        //   cell.font = { bold: true };
+        // });
+
+        // sheet.getColumn("F").width = 33;
+        // sheet.getColumn("H").width = 33;
+
+        // sheet.getColumn("G").width = 83;
+        // sheet.getColumn("I").width = 83;
+
+        // sheet.getCell("F1").fill = {
+        //   type: "pattern",
+        //   pattern: "solid",
+        //   fgColor: { argb: "FFF8CBAD" },
+        // };
+
+        // sheet.getCell("G1").fill = {
+        //   type: "pattern",
+        //   pattern: "solid",
+        //   fgColor: { argb: "FFF8CBAD" },
+        // };
+
+        // sheet.getCell("H1").fill = {
+        //   type: "pattern",
+        //   pattern: "solid",
+        //   fgColor: { argb: "FF44B3E1" },
+        // };
+
+        // sheet.getCell("I1").fill = {
+        //   type: "pattern",
+        //   pattern: "solid",
+        //   fgColor: { argb: "FF44B3E1" },
+        // };
+
+        // for (let rowNumber = 1; rowNumber <= sheet.rowCount; rowNumber++) {
+        //   sheet.getRow(rowNumber).eachCell({ includeEmpty: true }, (cell) => {
+        //     cell.border = {
+        //       top: { style: "thin" },
+        //       left: { style: "thin" },
+        //       bottom: { style: "thin" },
+        //       right: { style: "thin" },
+        //     };
+        //   });
+        // }
 
         const fileData = await wb.xlsx.writeBuffer();
         const blob = new Blob([fileData], {

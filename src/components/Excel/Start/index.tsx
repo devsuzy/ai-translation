@@ -47,6 +47,7 @@ export const Start = () => {
                   step: "Upload",
                   fileData: rowMap,
                   fileInfo: file,
+                  wb: workbook,
                 });
               }
             })

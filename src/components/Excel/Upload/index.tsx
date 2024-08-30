@@ -13,6 +13,8 @@ export const Upload = () => {
       step: "Start",
       fileData: undefined,
       fileInfo: undefined,
+      complete: false,
+      wb: undefined,
     });
   }, [setContextValue]);
 

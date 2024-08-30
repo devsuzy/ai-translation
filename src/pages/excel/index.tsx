@@ -7,6 +7,7 @@ import {
 } from "react";
 import styles from "./styles.module.scss";
 import { Generating, Start, Upload } from "@/components/Excel";
+import { Workbook } from "exceljs";
 
 type ExcelStepType = "Start" | "Upload" | "Generating";
 
@@ -15,6 +16,7 @@ interface ExcelContextTypes {
   fileData?: Map<any, any>;
   fileInfo?: any;
   complete?: boolean;
+  wb?: Workbook;
 }
 
 export const EXCEL_ROW_MAP = [
