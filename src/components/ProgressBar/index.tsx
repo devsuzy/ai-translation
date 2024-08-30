@@ -58,11 +58,6 @@ export const ProgressBar = () => {
     if (progressStateValue.length === 0 || progressStateValue.count === 0)
       return;
     if (progressStateValue.length === progressStateValue.count) {
-      console.log(
-        "여긴가??",
-        progressStateValue.length,
-        progressStateValue.count
-      );
       // clearInterval(intervalRef.current);
       setProgress(100);
       return;

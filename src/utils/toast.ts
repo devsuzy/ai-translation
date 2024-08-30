@@ -44,3 +44,7 @@ export const showToast = (
       return toast(content, optionsToApply);
   }
 };
+
+export const dismissToast = (id: Id) => {
+  toast.dismiss(id);
+};

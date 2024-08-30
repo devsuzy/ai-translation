@@ -3,7 +3,7 @@ import { ExcelFile } from "../ExcelFile";
 import styles from "./styles.module.scss";
 import Button from "@/components/Button";
 import { EXCEL_ROW_MAP, useExcelState } from "@/pages/excel";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { useSetRecoilState } from "recoil";
@@ -11,21 +11,33 @@ import { progressState } from "@/stores/excel";
 import { sleep } from "@/utils/sleep";
 import { api } from "@/lib/api/trans";
 import { sendRequestsInBatches } from "@/utils/requestBatches";
-import { showToast } from "@/utils/toast";
+import { dismissToast, showToast } from "@/utils/toast";
+import { Id } from "react-toastify";
+
+let abortController = new AbortController();
+let signal = abortController.signal;
 
 export const callApi = (text: string) => {
-  return api.post("", {
-    type: "trans",
-    text,
-    count: "",
-    situation: `Act as a professinoal translator working in commerce company.\nTranslate the following text to ${"Korean"}.\nAll Translated sentences must be translated with as much detail as possible\nPrint ONLY Translated text.`,
-  });
+  return api.post(
+    "",
+    {
+      type: "trans",
+      text,
+      count: "",
+      situation: `Act as a professinoal translator working in commerce company.\nTranslate the following text to ${"Korean"}.\nAll Translated sentences must be translated with as much detail as possible\nPrint ONLY Translated text.`,
+    },
+    {
+      signal,
+    }
+  );
 };
 
 export const Generating = () => {
   const [contextValue, setContextValue] = useExcelState();
   const setProgressState = useSetRecoilState(progressState);
   const [blobData, setBlobData] = useState<Blob>();
+
+  const toastIdRefs = useRef<Id[]>([]);
 
   const fileNameSplit = (
     contextValue.fileInfo?.name ? contextValue.fileInfo?.name : "empty.xlsx"
@@ -52,6 +64,8 @@ export const Generating = () => {
       length: 0,
       count: 0,
     });
+    if (toastIdRefs.current.length > 0)
+      toastIdRefs.current.forEach((id) => dismissToast(id));
   }, [setContextValue, setProgressState]);
 
   const handleDownload = useCallback(() => {
@@ -60,9 +74,21 @@ export const Generating = () => {
   }, [blobData]);
 
   useEffect(() => {
-    if (!excelData || excelData.length === 0) return;
+    if (
+      contextValue.step !== "Generating" ||
+      !excelData ||
+      excelData.length === 0
+    )
+      return;
 
     let count = 0;
+
+    toastIdRefs.current.push(
+      showToast("info", <p>번역중 ...</p>, {
+        position: "bottom-right",
+        autoClose: false,
+      })
+    );
 
     async function handleTranslation() {
       try {
@@ -95,6 +121,21 @@ export const Generating = () => {
 
         const result = await sendRequestsInBatches(promises, 50, 3000);
         const resultFlat = result.flat();
+
+        console.log(resultFlat);
+
+        for (let i = 0; i < resultFlat.length; i++) {
+          if (resultFlat[i].status === "rejected") {
+            throw new Error("AXIOS_CANCLE");
+          }
+          if (
+            (resultFlat[i] as any).value.length > 0 &&
+            ((resultFlat[i] as any).value[0].status === "rejected" ||
+              (resultFlat[i] as any).value[1].status === "rejected")
+          ) {
+            throw new Error("AXIOS_CANCLE");
+          }
+        }
 
         resultFlat.forEach((res, i) => {
           if (res.status === "fulfilled") {
@@ -179,17 +220,35 @@ export const Generating = () => {
 
         await sleep(1000);
 
+        if (toastIdRefs.current.length > 0)
+          toastIdRefs.current.forEach((id) => dismissToast(id));
+        showToast("success", <p>번역완료</p>, {
+          position: "bottom-right",
+        });
+
         setBlobData(blob);
         setContextValue((prev) => ({
           ...prev,
           complete: true,
         }));
       } catch (err) {
-        showToast("error", "번역에 실패했습니다.");
-        throw new Error(`translation error - ${err}`);
+        if ((err as any).message === "AXIOS_CANCLE") {
+          showToast("error", "번역이 취소되었습니다.");
+        } else {
+          showToast("error", "번역에 실패했습니다.");
+        }
+        handleCancle();
+        console.error(`translation error - ${err}`);
+        // throw new Error(`translation error - ${err}`);
       }
     }
     handleTranslation();
+
+    return () => {
+      abortController.abort();
+      abortController = new AbortController();
+      signal = abortController.signal;
+    };
   }, []);
 
   return (
