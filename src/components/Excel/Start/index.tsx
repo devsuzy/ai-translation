@@ -9,7 +9,6 @@ import { basePath } from "@/config";
 
 export const Start = () => {
   const [contextValue, setContextValue] = useExcelState();
-  const [isMobile, setIsMobile] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropzoneRef = useRef<HTMLDivElement>(null);
 
@@ -105,18 +104,6 @@ export const Start = () => {
     [inactiveDropzone, setFileData]
   );
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1119);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   return (
     <div
       className={styles["start-wrap"]}
@@ -133,16 +120,13 @@ export const Start = () => {
           alt=""
           className="m-auto"
         />
-        {isMobile ? (
-          <p className="text-[1.8rem] text-center font-semibold pt-6">
-            내 PC에서 파일을 첨부해주세요.
-          </p>
-        ) : (
-          <p className="text-[1.8rem] text-center font-semibold pt-6">
-            <b className="text-[2rem] text-primary">내 PC에서 첨부</b>
-            하거나 문서를 드래그하여 넣어주세요.
-          </p>
-        )}
+        <p className="lg:hidden text-[1.8rem] text-center font-semibold pt-6">
+          내 PC에서 파일을 첨부해주세요.
+        </p>
+        <p className="hidden lg:block text-[1.8rem] text-center font-semibold pt-6">
+          <b className="text-[2rem] text-primary">내 PC에서 첨부</b>
+          하거나 문서를 드래그하여 넣어주세요.
+        </p>
       </div>
       <div className={`${"pc-only"} ${styles.divider}`}>
         <p className="text-[1.4rem] text-center text-gray-2">또는</p>

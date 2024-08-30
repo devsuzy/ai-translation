@@ -15,8 +15,8 @@ export default function Header() {
         <Image
           src={`${basePath}/logo.svg`}
           alt="logo"
-          width={32}
-          height={32}
+          width={56}
+          height={36}
           className={styles.logo}
         />
       </Link>

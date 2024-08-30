@@ -16,15 +16,30 @@
 
 @media screen and (max-width: 1119px) {
   .lang-bar {
+    position: relative;
     background-color: #fff;
     width: 100%;
     display: flex;
     color: #000;
     justify-content: space-between;
-    padding: 1.2rem 1.6rem;
+    padding: 0 1.6rem;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      margin-left: -1px;
+      width: 1px;
+      background-color: rgba(229, 232, 235, 0.5);
+      z-index: 1;
+    }
+
     h3 {
       position: relative;
       top: initial;
+      padding: 1.2rem 0;
       transform: initial;
       font-weight: 500;
       font-size: 1.6rem;
@@ -35,6 +50,7 @@
     .select-box {
       position: relative;
       top: initial;
+      padding: 1.2rem 0;
       transform: initial;
       color: #000;
       font-weight: 500;
