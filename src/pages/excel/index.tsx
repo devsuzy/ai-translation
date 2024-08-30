@@ -8,6 +8,7 @@ import {
 import styles from "./styles.module.scss";
 import { Generating, Start, Upload } from "@/components/Excel";
 import { Workbook } from "exceljs";
+import Head from "next/head";
 
 type ExcelStepType = "Start" | "Upload" | "Generating";
 
@@ -49,6 +50,9 @@ export default function Excel() {
   });
   return (
     <>
+      <Head>
+        <title>문서번역 | AI Translation</title>
+      </Head>
       <div className="flex h-[calc(100vh-var(--header-height))]">
         <div className={styles["excel-wrap"]}>
           <ExcelContext.Provider value={contextState}>
