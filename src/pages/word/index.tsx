@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { Input, LangBar, Output } from "../../components/Word";
 import styles from "./styles.module.scss";
+import { progressState } from "@/stores/excel";
+import { useRecoilValue } from "recoil";
 
 export default function Word() {
   const isDesktop = useMediaQuery({

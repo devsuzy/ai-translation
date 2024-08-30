@@ -7,7 +7,7 @@ import particleAnimationData from "@/assets/lottie/particle.json";
 import particleBlueAnimationData from "@/assets/lottie/particle_blue.json";
 import particleYellowAnimationData from "@/assets/lottie/particle_yellow.json";
 import DelayComponent from "../Delay";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { progressState } from "@/stores/excel";
 
 import { CircularProgressbar } from "react-circular-progressbar";
@@ -15,7 +15,8 @@ import "react-circular-progressbar/dist/styles.css";
 
 export const ProgressBar = () => {
   const [contextValue] = useExcelState();
-  const progressStateValue = useRecoilValue(progressState);
+  const [progressStateValue, setProgressStateValue] =
+    useRecoilState(progressState);
 
   const [progress, setProgress] = useState(0);
 
@@ -47,18 +48,33 @@ export const ProgressBar = () => {
     // updateProgressBar();
 
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
     };
   }, []);
 
   useEffect(() => {
-    if (progressStateValue.length === 0) return;
+    if (progressStateValue.length === 0 || progressStateValue.count === 0)
+      return;
     if (progressStateValue.length === progressStateValue.count) {
+      console.log(
+        "여긴가??",
+        progressStateValue.length,
+        progressStateValue.count
+      );
       // clearInterval(intervalRef.current);
       setProgress(100);
       return;
     }
     setProgress((progressStateValue.count / progressStateValue.length) * 100);
+
+    return () => {
+      setProgressStateValue({
+        length: 0,
+        count: 0,
+      });
+    };
   }, [progressStateValue]);
 
   if (!contextValue.complete)

@@ -22,14 +22,6 @@ export const callApi = (text: string) => {
   });
 };
 
-// export const callApi = (text: string) => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve(`test - ${text}`);
-//     }, Math.random() * 3000 + 1000);
-//   });
-// };
-
 export const Generating = () => {
   const [contextValue, setContextValue] = useExcelState();
   const setProgressState = useSetRecoilState(progressState);
