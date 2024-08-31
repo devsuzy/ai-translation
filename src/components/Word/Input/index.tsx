@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { languageValueState, transValueState } from "@/stores/word";
 import { CustomIcon } from "@/components/CustomIcon";
@@ -67,14 +67,11 @@ export const Input = ({ desktop }: { desktop: boolean }) => {
   };
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!e.target.value || e.target.value.trim() === "") {
+      setTransValue("");
+    }
     setInput(e.target.value);
   };
-
-  /*
-  useEffect(() => {
-    PostTransValue(debounceValue);
-  }, [debounceValue, PostTransValue]);
-  */
 
   return (
     <div className={styles["input-wrap"]}>
