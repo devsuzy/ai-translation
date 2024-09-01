@@ -50,9 +50,10 @@
     border-color: rgba(229, 232, 235, 0.5);
     background-color: #fff;
     > h1 {
-      font-size: 1.4rem;
-      flex: 1;
       margin-left: 1rem;
+      flex: 1;
+      font-size: 1.4rem;
+      font-weight: 700;
     }
     > a {
       position: static;
