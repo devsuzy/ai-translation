@@ -35,12 +35,13 @@ html {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
+  /* background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
     )
-    rgb(var(--background-start-rgb));
+    rgb(var(--background-start-rgb)); */
+  background-color: #fff;
   font-size: 1.6rem;
 }
 
@@ -75,6 +76,14 @@ main {
   }
   .mo-only {
     display: block !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .Toastify__toast-container--top-center,
+  .Toastify__toast-container--top-left,
+  .Toastify__toast-container--top-right {
+    top: calc(env(safe-area-inset-top) + 1.6rem);
   }
 }
 

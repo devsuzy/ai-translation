@@ -3,9 +3,9 @@ import styles from "./styles.module.scss";
 import Button from "@/components/Button";
 import ExcelJS from "exceljs";
 import { useExcelState } from "@/pages/excel";
-import { showToast } from "@/utils/toast";
 import Image from "next/image";
 import { basePath } from "@/config";
+import { toastWithResponsive } from "@/utils/toastWithResponsive";
 
 export const Start = () => {
   const [contextValue, setContextValue] = useExcelState();
@@ -58,7 +58,10 @@ export const Start = () => {
             });
         };
       } else {
-        showToast("error", <p>업로드 가능한 파일 형식이 아닙니다.</p>);
+        toastWithResponsive(
+          "error",
+          <p>업로드 가능한 파일 형식이 아닙니다.</p>
+        );
         inactiveDropzone();
       }
     },
@@ -97,7 +100,7 @@ export const Start = () => {
     (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       if (e.dataTransfer.files.length > 1) {
-        showToast("error", <p>한 개의 파일만 업로드 해주세요.</p>);
+        toastWithResponsive("error", <p>한 개의 파일만 업로드 해주세요.</p>);
         inactiveDropzone();
         return;
       }

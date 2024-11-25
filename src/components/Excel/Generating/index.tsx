@@ -10,8 +10,9 @@ import { progressState } from "@/stores/excel";
 import { sleep } from "@/utils/sleep";
 import { api } from "@/lib/api/trans";
 import { sendRequestsInBatches } from "@/utils/requestBatches";
-import { dismissToast, showToast } from "@/utils/toast";
+import { dismissToast } from "@/utils/toast";
 import { Id } from "react-toastify";
+import { toastWithResponsive } from "@/utils/toastWithResponsive";
 
 let abortController = new AbortController();
 let signal = abortController.signal;
@@ -85,7 +86,7 @@ export const Generating = () => {
     let count = 0;
 
     toastIdRefs.current.push(
-      showToast("info", <p>번역중 ...</p>, {
+      toastWithResponsive("info", <p>번역중 ...</p>, {
         position: "bottom-right",
         autoClose: false,
       })
@@ -205,7 +206,7 @@ export const Generating = () => {
 
         if (toastIdRefs.current.length > 0)
           toastIdRefs.current.forEach((id) => dismissToast(id));
-        showToast("success", <p>번역완료</p>, {
+        toastWithResponsive("success", <p>번역완료</p>, {
           position: "bottom-right",
         });
 
@@ -216,9 +217,9 @@ export const Generating = () => {
         }));
       } catch (err) {
         if ((err as any).message === "AXIOS_CANCLE") {
-          showToast("error", "번역이 취소되었습니다.");
+          toastWithResponsive("error", "번역이 취소되었습니다.");
         } else {
-          showToast("error", "번역에 실패했습니다.");
+          toastWithResponsive("error", "번역에 실패했습니다.");
         }
         handleCancle();
         console.error(`translation error - ${err}`);

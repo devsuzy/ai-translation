@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { languageValueState, transValueState } from "@/stores/word";
 import { CustomIcon } from "@/components/CustomIcon";
 
 import styles from "./styles.module.scss";
-import useDebounce from "@/hooks/useDebounce";
 import { TransAPI } from "@/lib/api/trans";
-import { showToast } from "@/utils/toast";
+import { toastWithResponsive } from "@/utils/toastWithResponsive";
+import { checkIsMobile } from "@/utils/isMobile";
 
 export const Input = ({ desktop }: { desktop: boolean }) => {
   const languageValue = useRecoilValue(languageValueState);
@@ -27,14 +27,14 @@ export const Input = ({ desktop }: { desktop: boolean }) => {
 
       if (translationRef.current) return;
 
-      showToast("info", <p>번역중 ...</p>, {
+      toastWithResponsive("info", <p>번역중 ...</p>, {
         position: "bottom-right",
       });
       translationRef.current = true;
 
       const result = await TransAPI({ text: input, language: languageValue });
       setTransValue(result);
-      showToast("success", <p>번역완료</p>, {
+      toastWithResponsive("success", <p>번역완료</p>, {
         position: "bottom-right",
       });
       setTimeout(() => {
@@ -45,14 +45,16 @@ export const Input = ({ desktop }: { desktop: boolean }) => {
   );
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // console.log("up", e.key);
+    if (checkIsMobile()) return;
+
     if (e.key === "Shift") {
       shiftRef.current = false;
     }
   };
 
   const handleKeydown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // console.log("down", e.key);
+    if (checkIsMobile()) return;
+
     if (e.key === "Shift") {
       shiftRef.current = true;
     }
@@ -69,12 +71,6 @@ export const Input = ({ desktop }: { desktop: boolean }) => {
   const handleChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
   };
-
-  /*
-  useEffect(() => {
-    PostTransValue(debounceValue);
-  }, [debounceValue, PostTransValue]);
-  */
 
   return (
     <div className={styles["input-wrap"]}>
