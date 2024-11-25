@@ -3,18 +3,29 @@ import {
   Dispatch,
   SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import styles from "./styles.module.scss";
 import { Generating, Start, Upload } from "@/components/Excel";
 import { Workbook } from "exceljs";
 import Head from "next/head";
+import { ExcelPreview } from "@/components/Excel/ExcelPreview";
+
+export interface ExcelRowTypes {
+  address: string;
+  style?: any;
+  styleId?: any;
+  type: number;
+  value: string;
+}
 
 type ExcelStepType = "Start" | "Upload" | "Generating";
 
 interface ExcelContextTypes {
   step: ExcelStepType;
-  fileData?: Map<any, any>;
+  selectAddress?: string[];
+  fileData?: Array<ExcelRowTypes[]>;
   fileInfo?: any;
   complete?: boolean;
   wb?: Workbook;
@@ -47,7 +58,15 @@ export const useExcelState = () => {
 export default function Excel() {
   const contextState = useState<ExcelContextTypes>({
     step: "Start",
+    selectAddress: [],
   });
+
+  // TEST LOG
+  useEffect(() => {
+    console.log("contextState - ", contextState);
+  }, [contextState]);
+  // TEST LOG
+
   return (
     <>
       <Head>
@@ -60,6 +79,7 @@ export default function Excel() {
             {contextState[0].step === "Upload" && <Upload />}
             {contextState[0].step === "Generating" && <Generating />}
             {/* <Generating /> */}
+            <ExcelPreview />
           </ExcelContext.Provider>
         </div>
       </div>

@@ -15,7 +15,11 @@ export async function sendRequestsInBatches(
         .reduce((arr, valArr) => {
           arr.push(
             Promise.allSettled(
-              valArr.map((obj: any) => callApi(obj.value).finally(obj.callback))
+              valArr.map((obj: any) =>
+                callApi(obj.value)
+                  .then((res) => ({ ...res, address: obj?.address || "" }))
+                  .finally(obj.callback)
+              )
             )
           );
           return arr;

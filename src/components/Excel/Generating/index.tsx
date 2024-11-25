@@ -4,7 +4,6 @@ import styles from "./styles.module.scss";
 import Button from "@/components/Button";
 import { EXCEL_ROW_MAP, useExcelState } from "@/pages/excel";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { useSetRecoilState } from "recoil";
 import { progressState } from "@/stores/excel";
@@ -49,8 +48,10 @@ export const Generating = () => {
     `.${fileExtension}`;
 
   const excelData = useMemo(() => {
-    return contextValue.fileData ? [...contextValue.fileData] : [];
+    return contextValue.fileData || [];
   }, [contextValue]);
+
+  const selectAddressArr = contextValue?.selectAddress || [];
 
   const handleCancle = useCallback(() => {
     setContextValue({
@@ -102,21 +103,41 @@ export const Generating = () => {
         const updateProgress = () => {
           count += 1;
           setProgressState({
-            length: promises.length * 2,
+            length: Math.ceil(promises.length * 2),
             count,
           });
         };
 
         const promises: any[] = [];
 
-        excelData.forEach((data, i) => {
-          const [key, values] = data;
+        excelData.forEach((dataRow, i) => {
           if (i === 0) return;
 
-          promises.push([
-            { value: values[targetIndexes[0]], callback: updateProgress },
-            { value: values[targetIndexes[1]], callback: updateProgress },
-          ]);
+          // 선택 번역과 기본 번역 분기처리 개선 필요 ....
+          if (selectAddressArr.length > 0) {
+            dataRow.forEach((cell) => {
+              if (selectAddressArr.includes(cell.address)) {
+                promises.push([
+                  {
+                    value: cell.value,
+                    callback: updateProgress,
+                    address: cell.address,
+                  },
+                ]);
+              }
+            });
+          } else {
+            promises.push([
+              {
+                value: dataRow[targetIndexes[0]].value,
+                callback: updateProgress,
+              },
+              {
+                value: dataRow[targetIndexes[1]].value,
+                callback: updateProgress,
+              },
+            ]);
+          }
         });
 
         const result = await sendRequestsInBatches(promises, 50, 3000);
@@ -130,8 +151,8 @@ export const Generating = () => {
           }
           if (
             (resultFlat[i] as any).value.length > 0 &&
-            ((resultFlat[i] as any).value[0].status === "rejected" ||
-              (resultFlat[i] as any).value[1].status === "rejected")
+            ((resultFlat[i] as any).value[0]?.status === "rejected" ||
+              (resultFlat[i] as any).value[1]?.status === "rejected")
           ) {
             throw new Error("AXIOS_CANCLE");
           }
@@ -139,8 +160,21 @@ export const Generating = () => {
 
         resultFlat.forEach((res, i) => {
           if (res.status === "fulfilled") {
-            excelData[i + 1][1][targetIndexes[2]] = res.value[0].value.data;
-            excelData[i + 1][1][targetIndexes[3]] = res.value[1].value.data;
+            // 선택 번역과 기본 번역 분기처리 개선 필요 ....
+            if (selectAddressArr.length > 0) {
+              excelData.forEach((dataRow) => {
+                dataRow.forEach((cell) => {
+                  if (res.value[0].value.address === cell.address) {
+                    cell.value = res.value[0].value.data;
+                  }
+                });
+              });
+            } else {
+              excelData[i + 1][targetIndexes[2]].value =
+                res.value[0].value.data;
+              excelData[i + 1][targetIndexes[3]].value =
+                res.value[1].value.data;
+            }
           }
         });
 
@@ -151,67 +185,16 @@ export const Generating = () => {
         wb.eachSheet((sheet, id) => {
           sheet.eachRow((row, rowIndex) => {
             if (rowIndex === 1 || !row) return;
-            sheet.getRow(rowIndex).getCell(8).value =
-              excelData[rowIndex - 1]?.[1]?.[7];
-            sheet.getRow(rowIndex).getCell(9).value =
-              excelData[rowIndex - 1]?.[1]?.[8];
+
+            // 선택 번역과 기본 번역 분기처리 개선 필요 ....
+            if (selectAddressArr.length === 0) {
+              sheet.getRow(rowIndex).getCell(8).value =
+                excelData[rowIndex - 1]?.[7].value;
+              sheet.getRow(rowIndex).getCell(9).value =
+                excelData[rowIndex - 1]?.[8].value;
+            }
           });
         });
-
-        // excelData.forEach((data) => {
-        //   const [key, values] = data;
-        //   sheet.addRow(values);
-        // });
-
-        // sheet.autoFilter = {
-        //   from: "A1",
-        //   to: "I1",
-        // };
-
-        // sheet.getRow(1).eachCell({ includeEmpty: true }, (cell) => {
-        //   cell.font = { bold: true };
-        // });
-
-        // sheet.getColumn("F").width = 33;
-        // sheet.getColumn("H").width = 33;
-
-        // sheet.getColumn("G").width = 83;
-        // sheet.getColumn("I").width = 83;
-
-        // sheet.getCell("F1").fill = {
-        //   type: "pattern",
-        //   pattern: "solid",
-        //   fgColor: { argb: "FFF8CBAD" },
-        // };
-
-        // sheet.getCell("G1").fill = {
-        //   type: "pattern",
-        //   pattern: "solid",
-        //   fgColor: { argb: "FFF8CBAD" },
-        // };
-
-        // sheet.getCell("H1").fill = {
-        //   type: "pattern",
-        //   pattern: "solid",
-        //   fgColor: { argb: "FF44B3E1" },
-        // };
-
-        // sheet.getCell("I1").fill = {
-        //   type: "pattern",
-        //   pattern: "solid",
-        //   fgColor: { argb: "FF44B3E1" },
-        // };
-
-        // for (let rowNumber = 1; rowNumber <= sheet.rowCount; rowNumber++) {
-        //   sheet.getRow(rowNumber).eachCell({ includeEmpty: true }, (cell) => {
-        //     cell.border = {
-        //       top: { style: "thin" },
-        //       left: { style: "thin" },
-        //       bottom: { style: "thin" },
-        //       right: { style: "thin" },
-        //     };
-        //   });
-        // }
 
         const fileData = await wb.xlsx.writeBuffer();
         const blob = new Blob([fileData], {

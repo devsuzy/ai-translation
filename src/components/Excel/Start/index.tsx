@@ -36,15 +36,18 @@ export const Start = () => {
               workbook.eachSheet((sheet, id) => {
                 sheet.eachRow((row, rowIndex) => {
                   if (!row) return;
-                  const filtered = (row.values as any[]).filter((data) => data);
-                  rowMap.set(rowIndex, filtered);
+                  rowMap.set(rowIndex, row.model);
                 });
               });
 
               if (rowMap.size > 0) {
+                const fileData = [...rowMap].map(([_, v], i) => {
+                  return v.cells;
+                });
+
                 setContextValue({
                   step: "Upload",
-                  fileData: rowMap,
+                  fileData: fileData,
                   fileInfo: file,
                   wb: workbook,
                 });
