@@ -9,6 +9,7 @@ import { toastWithResponsive } from "@/utils/toastWithResponsive";
 
 export const Start = () => {
   const [contextValue, setContextValue] = useExcelState();
+
   const inputRef = useRef<HTMLInputElement>(null);
   const dropzoneRef = useRef<HTMLDivElement>(null);
 
@@ -33,25 +34,70 @@ export const Start = () => {
           wb.xlsx
             .load(buffer)
             .then((workbook) => {
-              workbook.eachSheet((sheet, id) => {
-                sheet.eachRow((row, rowIndex) => {
-                  if (!row) return;
-                  rowMap.set(rowIndex, row.model);
-                });
-              });
-
-              if (rowMap.size > 0) {
-                const fileData = [...rowMap].map(([_, v], i) => {
-                  return v.cells;
+              function handleSelectSheet(sheetArr: ExcelJS.Worksheet[]) {
+                let resolver: (value: unknown) => void;
+                const result = new Promise((resolve) => {
+                  resolver = resolve;
                 });
 
-                setContextValue({
-                  step: "Upload",
-                  fileData: fileData,
-                  fileInfo: file,
-                  wb: workbook,
+                const container = document.querySelector(".excel-preview-area");
+                const inner = document.createElement("div");
+                inner.className = `flex border-r border-black bg-white w-max`;
+                sheetArr.forEach((sheet) => {
+                  const button = document.createElement("button");
+                  button.className = `border border-black border-r-0 w-40 h-20`;
+                  button.style.fontSize = "1.2rem";
+                  button.innerText = sheet.name;
+                  button.onclick = () => {
+                    resolver(sheet.name);
+                    inner?.remove();
+                  };
+                  inner.append(button);
                 });
+                container?.append(inner);
+
+                return result;
               }
+
+              async function handleWorkbook() {
+                // workbook.eachSheet((sheet, id) => {
+                //   const sheetName = sheet.name;
+                //   sheet.eachRow((row, rowIndex) => {
+                //     if (!row) return;
+                //     rowMap.set(`${sheetName}-${rowIndex}`, row.model);
+                //   });
+                // });
+
+                const selectedSheet = await handleSelectSheet(
+                  workbook.worksheets
+                );
+
+                const sheetIndex = workbook.worksheets.findIndex(
+                  (sheet) => sheet.name === selectedSheet
+                );
+
+                const workSheet = workbook.worksheets[sheetIndex];
+                const sheetName = workSheet.name;
+                workSheet.eachRow((row, rowIndex) => {
+                  if (!row) return;
+                  rowMap.set(`${sheetName}-${rowIndex}`, row.model);
+                });
+
+                if (rowMap.size > 0) {
+                  const fileData = [...rowMap].map(([_, v], i) => {
+                    return v.cells;
+                  });
+
+                  setContextValue({
+                    step: "Upload",
+                    fileData: fileData,
+                    fileInfo: file,
+                    wb: workbook,
+                  });
+                }
+              }
+
+              handleWorkbook();
             })
             .catch((err) => {
               throw new Error(`upload error - ${err}`);
