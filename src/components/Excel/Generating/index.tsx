@@ -103,17 +103,23 @@ export const Generating = () => {
 
         const updateProgress = () => {
           count += 1;
-          setProgressState({
-            length: Math.ceil(promises.length * 2),
-            count,
-          });
+          // 선택 번역과 기본 번역 분기처리 개선 필요 ....
+          if (selectAddressArr.length > 0) {
+            setProgressState({
+              length: Math.ceil(promises.length),
+              count,
+            });
+          } else {
+            setProgressState({
+              length: Math.ceil(promises.length * 2),
+              count,
+            });
+          }
         };
 
         const promises: any[] = [];
 
         excelData.forEach((dataRow, i) => {
-          if (i === 0) return;
-
           // 선택 번역과 기본 번역 분기처리 개선 필요 ....
           if (selectAddressArr.length > 0) {
             dataRow.forEach((cell) => {
@@ -128,6 +134,7 @@ export const Generating = () => {
               }
             });
           } else {
+            if (i === 0) return;
             promises.push([
               {
                 value: dataRow[targetIndexes[0]].value,
