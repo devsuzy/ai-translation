@@ -31,15 +31,15 @@ export const ExcelPreview = () => {
               className="flex border-t border-black overflow-hidden w-max"
               key={i}
             >
-              {row.map((cell) => {
+              {row.map((cell, j) => {
                 return (
                   <div
                     className="flex flex-col w-[5.4rem] h-[4.6rem] overflow-hidden border-r border-black text-[1rem]"
-                    key={cell.address}
+                    key={i + "" + j}
                   >
                     <button
                       onClick={handleSelectAddress(cell.address)}
-                      className={`border-b border-black ${
+                      className={`flex-[0_0_1.6rem] border-b border-black ${
                         selectAddressArr.includes(cell.address)
                           ? "bg-black text-white"
                           : ""

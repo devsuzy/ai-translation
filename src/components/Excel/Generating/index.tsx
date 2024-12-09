@@ -178,6 +178,21 @@ export const Generating = () => {
                 });
               });
             } else {
+              if (!excelData[i + 1][targetIndexes[2]]) {
+                excelData[i + 1][targetIndexes[2]] = {
+                  address: "",
+                  type: 0,
+                  value: "",
+                };
+              }
+              if (!excelData[i + 1][targetIndexes[3]]) {
+                excelData[i + 1][targetIndexes[3]] = {
+                  address: "",
+                  type: 0,
+                  value: "",
+                };
+              }
+
               excelData[i + 1][targetIndexes[2]].value =
                 res.value[0].value.data;
               excelData[i + 1][targetIndexes[3]].value =
